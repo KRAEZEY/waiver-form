@@ -46,6 +46,17 @@
     button:hover, .link-button:hover {
       background-color: #1b5fbd;
     }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-top: 10px;
+    }
+    .child-entry {
+      background: #eef;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -60,58 +71,91 @@
 
   <form id="waiverForm">
     <h3>Sign the Waiver</h3>
+
     <label>Parent First Name:
-      <input type="text" name="parentFirstName" required />
+      <input type="text" name="parentFirstName" id="parentFirstName" required />
     </label>
     <label>Parent Last Name:
-      <input type="text" name="parentLastName" required />
+      <input type="text" name="parentLastName" id="parentLastName" required />
     </label>
+
     <label>Child First Name:
-      <input type="text" name="childFirstName" required />
+      <input type="text" id="childFirstName" />
     </label>
     <label>Child Last Name:
-      <input type="text" name="childLastName" required />
+      <input type="text" id="childLastName" />
     </label>
     <label>Date:
-      <input type="date" name="date" required />
+      <input type="date" id="date" />
     </label>
-    <button type="submit">Submit Waiver</button>
+
+    <button type="button" onclick="addChild()">➕ Add Child</button>
+
+    <ul id="childList"></ul>
+
+    <button type="submit">✅ Submit Waiver</button>
   </form>
 
-  <!-- Load Supabase JS -->
+  <!-- Supabase Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
   <script>
-    // ✅ Initialize Supabase using window.supabase
     const SUPABASE_URL = 'https://hmcidvwuuirbqghjxxow.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtY2lkdnd1dWlyYnFnaGp4eG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMTU3MTYsImV4cCI6MjA2MjY5MTcxNn0.v45HvSFMpwdaw1zDbOZDcHtkAuY44X6H5FIKmH0JPEk';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let children = [];
+
+    function addChild() {
+      const first = document.getElementById("childFirstName").value.trim();
+      const last = document.getElementById("childLastName").value.trim();
+      const date = document.getElementById("date").value;
+
+      if (!first || !last || !date) {
+        alert("Please enter full child info before adding.");
+        return;
+      }
+
+      children.push({ first, last, date });
+
+      const list = document.getElementById("childList");
+      const li = document.createElement("li");
+      li.className = "child-entry";
+      li.innerText = `${first} ${last} — ${date}`;
+      list.appendChild(li);
+
+      document.getElementById("childFirstName").value = "";
+      document.getElementById("childLastName").value = "";
+      document.getElementById("date").value = "";
+    }
+
     document.getElementById("waiverForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
-      const data = new FormData(this);
-      const parentFirst = data.get("parentFirstName");
-      const parentLast = data.get("parentLastName");
-      const childFirst = data.get("childFirstName");
-      const childLast = data.get("childLastName");
-      const date = data.get("date");
+      const parentFirst = document.getElementById("parentFirstName").value.trim();
+      const parentLast = document.getElementById("parentLastName").value.trim();
 
-      const { error } = await supabase.from("waivers").insert([
-        {
-          parent_first_name: parentFirst,
-          parent_last_name: parentLast,
-          child_first_name: childFirst,
-          child_last_name: childLast,
-          signed_date: date
-        }
-      ]);
+      if (!parentFirst || !parentLast || children.length === 0) {
+        alert("Please fill out parent info and add at least one child.");
+        return;
+      }
+
+      const inserts = children.map(child => ({
+        parent_first_name: parentFirst,
+        parent_last_name: parentLast,
+        child_first_name: child.first,
+        child_last_name: child.last,
+        signed_date: child.date
+      }));
+
+      const { error } = await supabase.from("waivers").insert(inserts);
 
       if (error) {
-        alert("There was an error saving your waiver: " + error.message);
+        alert("Error saving waiver: " + error.message);
       } else {
-        alert(`Thanks, ${parentFirst} ${parentLast}. Your waiver for ${childFirst} ${childLast} on ${date} has been submitted.`);
+        alert(`Waiver submitted for ${children.length} child(ren).`);
         this.reset();
+        document.getElementById("childList").innerHTML = "";
+        children = [];
       }
     });
   </script>

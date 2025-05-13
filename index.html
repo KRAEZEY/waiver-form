@@ -13,50 +13,53 @@
     h2, h3 {
       color: #222;
     }
-    form {
+    .waiver, form {
       background: #fff;
       padding: 20px;
-      max-width: 500px;
+      max-width: 700px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
     }
     label {
       display: block;
       margin-top: 15px;
       font-weight: bold;
     }
-    input, button {
+    input, button, .link-button {
       padding: 10px;
       width: 100%;
       margin-top: 5px;
       box-sizing: border-box;
-      border: 1px solid #ccc;
       border-radius: 5px;
     }
-    button {
+    button, .link-button {
       background-color: #2d89ef;
       color: white;
       border: none;
       cursor: pointer;
       margin-top: 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
     }
-    button:hover {
+    button:hover, .link-button:hover {
       background-color: #1b5fbd;
-    }
-    .waiver {
-      margin-top: 50px;
-    }
-    iframe {
-      border: 1px solid #ccc;
-      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <h2>Slide Guys Liability Waiver Form</h2>
+  <div class="waiver">
+    <h2>View the Slide Guys Liability Waiver</h2>
+    <p>Please read the waiver before signing the form below.</p>
+    <a class="link-button" href="https://kraezeyape.my.canva.site/copy-of-slide-guys-liability-release-form" target="_blank">
+      📄 View Waiver
+    </a>
+  </div>
 
   <form id="waiverForm">
+    <h3>Sign the Waiver</h3>
     <label>Parent First Name:
       <input type="text" name="parentFirstName" required />
     </label>
@@ -74,17 +77,6 @@
     </label>
     <button type="submit">Submit Waiver</button>
   </form>
-
-  <div class="waiver">
-    <h3>View Liability Waiver</h3>
-    <p>Please review the waiver below before submitting:</p>
-
-    <!-- ✅ Embedded Canva Site -->
-    <iframe 
-      src="https://kraezeyape.my.canva.site/copy-of-slide-guys-liability-release-form"
-      width="100%" height="800px" allowfullscreen loading="lazy">
-    </iframe>
-  </div>
 
   <script>
     document.getElementById("waiverForm").addEventListener("submit", function(e) {

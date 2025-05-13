@@ -78,8 +78,14 @@
     <button type="submit">Submit Waiver</button>
   </form>
 
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    document.getElementById("waiverForm").addEventListener("submit", function(e) {
+    const SUPABASE_URL = 'https://hmcidvwuuirbqghjxxow.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtY2lkdnd1dWlyYnFnaGp4eG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMTU3MTYsImV4cCI6MjA2MjY5MTcxNn0.v45HvSFMpwdaw1zDbOZDcHtkAuY44X6H5FIKmH0JPEk';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("waiverForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       const data = new FormData(this);
@@ -89,9 +95,22 @@
       const childLast = data.get("childLastName");
       const date = data.get("date");
 
-      alert(`Thanks, ${parentFirst} ${parentLast}. Your waiver for ${childFirst} ${childLast} on ${date} has been submitted.`);
+      const { error } = await supabase.from("waivers").insert([
+        {
+          parent_first_name: parentFirst,
+          parent_last_name: parentLast,
+          child_first_name: childFirst,
+          child_last_name: childLast,
+          signed_date: date
+        }
+      ]);
 
-      this.reset();
+      if (error) {
+        alert("There was an error saving your waiver: " + error.message);
+      } else {
+        alert(`Thanks, ${parentFirst} ${parentLast}. Your waiver for ${childFirst} ${childLast} on ${date} has been submitted.`);
+        this.reset();
+      }
     });
   </script>
 

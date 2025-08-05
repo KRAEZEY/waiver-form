@@ -46,6 +46,14 @@
     button:hover, .link-button:hover {
       background-color: #1b5fbd;
     }
+    .venmo-button {
+      background-color: #3d95ce;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .venmo-button:hover {
+      background-color: #1e70a5;
+    }
     ul {
       list-style-type: none;
       padding-left: 0;
@@ -56,6 +64,10 @@
       padding: 10px;
       margin-top: 5px;
       border-radius: 5px;
+    }
+    /* Hidden by default */
+    #venmoBtn {
+      display: none;
     }
   </style>
 </head>
@@ -95,6 +107,13 @@
 
     <button type="submit">✅ Submit Waiver</button>
   </form>
+
+  <!-- Venmo Button (hidden until submitted) -->
+  <a id="venmoBtn" class="link-button venmo-button" 
+     href="https://venmo.com/code?user_id=2933036538658816717&created=1745269468" 
+     target="_blank">
+    💰 Pay Venmo
+  </a>
 
   <!-- Supabase Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -153,9 +172,18 @@
         alert("Error saving waiver: " + error.message);
       } else {
         alert(`Waiver submitted for ${children.length} child(ren).`);
+
+        // Reset form
         this.reset();
         document.getElementById("childList").innerHTML = "";
         children = [];
+
+        // Show Venmo button
+        const venmoBtn = document.getElementById("venmoBtn");
+        venmoBtn.style.display = "inline-block";
+
+        // Scroll to Venmo button smoothly
+        venmoBtn.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     });
   </script>

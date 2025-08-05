@@ -51,10 +51,7 @@
       font-size: 22px; /* Bigger letters */
       font-weight: bold;
       padding: 20px;   /* Taller */
-      display: block;
-      width: 100%;
-      max-width: 700px; /* Match form width */
-      margin: 20px auto; /* Center horizontally */
+      width: 100%;     /* Fill container */
       box-sizing: border-box;
     }
     .venmo-button:hover {
@@ -112,14 +109,14 @@
     <ul id="childList"></ul>
 
     <button type="submit">✅ Submit Waiver</button>
-  </form>
 
-  <!-- Venmo Button (hidden until submitted) -->
-  <a id="venmoBtn" class="link-button venmo-button" 
-     href="https://venmo.com/code?user_id=2933036538658816717&created=1745269468" 
-     target="_blank">
-    💰 Pay Venmo
-  </a>
+    <!-- Venmo Button (hidden until submitted) -->
+    <a id="venmoBtn" class="link-button venmo-button" 
+       href="https://venmo.com/code?user_id=2933036538658816717&created=1745269468" 
+       target="_blank">
+      💰 Pay Venmo
+    </a>
+  </form>
 
   <!-- Supabase Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
